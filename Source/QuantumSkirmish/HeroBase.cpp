@@ -9,6 +9,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 
+DEFINE_LOG_CATEGORY(LogHeroBaseCharacter);
+
 // Sets default values
 AHeroBase::AHeroBase()
 {

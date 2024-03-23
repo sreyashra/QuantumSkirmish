@@ -12,7 +12,9 @@ class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
 
-UCLASS()
+DECLARE_LOG_CATEGORY_EXTERN(LogHeroBaseCharacter, Log, All);
+
+UCLASS(Config = Game)
 class QUANTUMSKIRMISH_API AHeroBase : public ACharacter
 {
 	GENERATED_BODY()
