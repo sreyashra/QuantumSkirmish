@@ -9,8 +9,12 @@
 class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
+class UInputAction;
+struct FInputActionValue;
 
-UCLASS()
+DECLARE_LOG_CATEGORY_EXTERN(LogHeroBaseCharacter, Log, All);
+
+UCLASS(Config = Game)
 class QUANTUMSKIRMISH_API AHeroBase : public ACharacter
 {
 	GENERATED_BODY()
@@ -29,14 +33,41 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-private:	
+public:
+	/** Returns CameraBoom subobject **/
+	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+
+	/** Returns FollowCamera subobject **/
+	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+protected:
+	//Called for movement input
+	void Move(const FInputActionValue& Value);
+
+	//Called for look input
+	void Look(const FInputActionValue& Value);
+
+private:
+	/** Camera boom */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraBoom;
 
+	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
 
+	/** Mapping Context */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* PlayerMappingContext;
 
+	/* Move Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* MoveAction;
+
+	/** Look Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* LookAction;
+
+	/** Player Controller */
+	APlayerController* PlayerController;
 };
