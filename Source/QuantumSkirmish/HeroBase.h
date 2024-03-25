@@ -40,12 +40,22 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+	/** Returns SprintSpeedMultiplier variable **/
+	UFUNCTION(BlueprintPure, Category = "Movement")
+	float GetSprintSpeedMultiplier() const { return SprintSpeedMultiplier; }
+
 protected:
 	//Called for movement input
 	void Move(const FInputActionValue& Value);
 
 	//Called for look input
 	void Look(const FInputActionValue& Value);
+
+	//Function to start sprinting
+	void StartSprint();
+
+	//Function to stop sprinting
+	void StopSprint();
 
 private:
 	/** Camera boom */
@@ -67,6 +77,14 @@ private:
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
+
+	/** Look Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* SprintAction;
+
+	/** Sprint speed multiplier */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
+	float SprintSpeedMultiplier;
 
 	/** Player Controller */
 	APlayerController* PlayerController;
