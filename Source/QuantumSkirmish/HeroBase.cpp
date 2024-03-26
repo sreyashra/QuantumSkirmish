@@ -8,6 +8,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "ToughSword.h"
 
 DEFINE_LOG_CATEGORY(LogHeroBaseCharacter);
 
@@ -51,6 +52,30 @@ void AHeroBase::BeginPlay()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(PlayerMappingContext, 0);
+		}
+	}
+
+	if (GetWorld())
+	{
+		// Setup spawn parameters
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		// Define the location and rotation for the new weapon
+		FVector Location = GetActorLocation() + FVector(100, 0, 0); // Example offset
+		FRotator Rotation = GetActorRotation();
+
+		// Spawn the weapon
+		AToughSword* NewWeapon = GetWorld()->SpawnActor<AToughSword>(ToughSwordClass, Location, Rotation, SpawnParams);
+
+		if (NewWeapon)
+		{
+			// If the weapon has been successfully spawned, you can attach it to the player character
+			// For example, attaching to a "WeaponSocket" on the character's mesh
+			NewWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("ToughSwordAttachSocket"));
+
+			// Additional logic after spawning (e.g., setting the weapon as the current weapon)
+			// CurrentWeapon = NewWeapon; // Assuming you have a CurrentWeapon member variable
 		}
 	}
 }

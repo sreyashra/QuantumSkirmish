@@ -92,4 +92,7 @@ private:
 
 	/** Player Controller */
 	APlayerController* PlayerController;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Combat")
+	TSubclassOf<class AToughSword> ToughSwordClass;
 };
