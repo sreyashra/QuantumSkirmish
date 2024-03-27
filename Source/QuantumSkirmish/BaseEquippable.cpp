@@ -13,17 +13,17 @@ ABaseEquippable::ABaseEquippable()
 	RootComponent = StaticMeshComponent;
 }
 
-void ABaseEquippable::Equip(ACharacter* Character)
+void ABaseEquippable::Equip(ACharacter* Character, FName SocketName)
 {
 	if (Character && !IsEquipped)
 	{
 		IsEquipped = true;
 
 		OwningCharacter = Character;
-		AttachToCharacter(Character);
+		AttachToCharacter(Character, SocketName);
 
 
-		SetActorHiddenInGame(true);
+		SetActorHiddenInGame(false);
 		SetActorEnableCollision(false);
 	}
 	
@@ -40,7 +40,7 @@ void ABaseEquippable::UnEquip()
 	OwningCharacter = nullptr;
 }
 
-void ABaseEquippable::AttachToCharacter(ACharacter* Character)
+void ABaseEquippable::AttachToCharacter(ACharacter* Character, FName SocketName)
 {
 	if (Character)
 	{

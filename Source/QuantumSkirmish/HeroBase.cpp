@@ -9,6 +9,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "ToughSword.h"
+#include "Animation/AnimInstance.h"
+#include "Animation/AnimMontage.h"
 
 DEFINE_LOG_CATEGORY(LogHeroBaseCharacter);
 
@@ -71,11 +73,12 @@ void AHeroBase::BeginPlay()
 		if (NewWeapon)
 		{
 			// If the weapon has been successfully spawned, you can attach it to the player character
-			// For example, attaching to a "WeaponSocket" on the character's mesh
-			NewWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("ToughSwordAttachSocket"));
+			NewWeapon->AttachToCharacter(this, HolsterSocket);
+			IsWeaponInHand = false;
 
-			// Additional logic after spawning (e.g., setting the weapon as the current weapon)
-			// CurrentWeapon = NewWeapon; // Assuming you have a CurrentWeapon member variable
+			CurrentWeapon = NewWeapon;
+
+			CurrentWeapon->Equip(this, HolsterSocket);
 		}
 	}
 }
@@ -106,6 +109,9 @@ void AHeroBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		//Jumping
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+
+		//ToggleCombat
+		EnhancedInputComponent->BindAction(ToggleCombatAction, ETriggerEvent::Started, this, &AHeroBase::ToggleCombat);
 	}
 
 }
@@ -156,4 +162,31 @@ void AHeroBase::StopSprint()
 {
 	GetCharacterMovement()->MaxWalkSpeed /= SprintSpeedMultiplier;
 	
+}
+
+void AHeroBase::ToggleCombat(const FInputActionValue& Value)
+{
+	bool InCombatMode = Value.Get<bool>();
+	if (PlayerController)
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		if (!IsWeaponInHand)
+		{
+			if (AnimInstance && DrawWeaponAnimMontage)
+			{
+				IsWeaponInHand = true;
+				AnimInstance->Montage_Play(DrawWeaponAnimMontage, 1.f);
+			}
+		}
+		else
+		{
+			if (AnimInstance && SheathWeaponAnimMontage)
+			{
+				IsWeaponInHand = false;
+				AnimInstance->Montage_Play(SheathWeaponAnimMontage, 1.f);
+			}
+		}
+	}
+	
+
 }

@@ -16,11 +16,11 @@ public:
 	// Sets default values for this actor's properties
 	ABaseEquippable();
 
-	virtual void Equip(ACharacter* Character);
+	virtual void Equip(ACharacter* Character, FName SocketName);
 	virtual void UnEquip();
 
 	UFUNCTION(BlueprintCallable, Category = "Equippable")
-	virtual void AttachToCharacter(ACharacter* Character);
+	virtual void AttachToCharacter(ACharacter* Character, FName SocketName);
 
 	UFUNCTION(BlueprintCallable, Category = "Equippable")
 	UPrimitiveComponent* GetMeshComponent()const;
@@ -43,9 +43,6 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh", meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* SkeletalMeshComponent;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Equippable", meta = (AllowPrivateAccess = "true"))
-	FName SocketName;
 
 	bool IsEquipped;
 	

@@ -11,6 +11,8 @@ class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
+class ABaseWeapon;
+class UAnimMontage;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogHeroBaseCharacter, Log, All);
 
@@ -44,6 +46,18 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Movement")
 	float GetSprintSpeedMultiplier() const { return SprintSpeedMultiplier; }
 
+	UFUNCTION(BlueprintPure, Category = "Combat")
+	FORCEINLINE class ABaseWeapon* GetCurrentWeapon() const { return CurrentWeapon; }
+
+	UFUNCTION(BlueprintPure, Category = "Combat")
+	bool GetIsWeaponInHand() const { return IsWeaponInHand; }
+
+	UFUNCTION(BlueprintPure, Category = "Combat")
+	FName GetHolsterSocket() const { return HolsterSocket; }
+
+	UFUNCTION(BlueprintPure, Category = "Combat")
+	FName GetHandSocket() const { return HandSocket; }
+
 protected:
 	//Called for movement input
 	void Move(const FInputActionValue& Value);
@@ -56,6 +70,9 @@ protected:
 
 	//Function to stop sprinting
 	void StopSprint();
+
+	//Called for ToggleCombat
+	void ToggleCombat(const FInputActionValue& Value);
 
 private:
 	/** Camera boom */
@@ -86,6 +103,10 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* JumpAction;
 
+	/** ToggleCombat Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* ToggleCombatAction;
+
 	/** Sprint speed multiplier */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
 	float SprintSpeedMultiplier;
@@ -95,4 +116,22 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 	TSubclassOf<class AToughSword> ToughSwordClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
+	FName HolsterSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
+	FName HandSocket;
+
+	/** Current Weapon */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	ABaseWeapon* CurrentWeapon;
+
+	bool IsWeaponInHand;
+
+	UPROPERTY(EditAnywhere, Category = "Animation", meta = (AllowPrivateAccess = "true"))
+	UAnimMontage* DrawWeaponAnimMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Animation", meta = (AllowPrivateAccess = "true"))
+	UAnimMontage* SheathWeaponAnimMontage;
 };
