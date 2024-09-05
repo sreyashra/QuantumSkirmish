@@ -2,6 +2,8 @@
 
 
 #include "HeroBase.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
 
 AHeroBase::AHeroBase()
 {
@@ -12,6 +14,16 @@ AHeroBase::AHeroBase()
 void AHeroBase::BeginPlay()
 {
 	Super::BeginPlay();
+	
+}
+
+void AHeroBase::Move(const FInputActionValue& Value)
+{
+	
+}
+
+void AHeroBase::Look(const FInputActionValue& Value)
+{
 	
 }
 
