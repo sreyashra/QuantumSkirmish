@@ -12,18 +12,19 @@ class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
 
-UCLASS()
+DECLARE_LOG_CATEGORY_EXTERN(LogHeroBase, Log, All);
+
+UCLASS(Config=Game)
 class QUANTUMSKIRMISH_API AHeroBase : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
 	AHeroBase();
-	virtual void Tick(float DeltaTime) override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	// Callback functions for player input
 	void Move(const FInputActionValue& Value);
@@ -32,9 +33,9 @@ protected:
 private:
 	// Camera components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera, meta=(AllowPrivateAccess = true))
-	USpringArmComponent* SpringArmComponent;
+	USpringArmComponent* CameraBoom;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera, meta=(AllowPrivateAccess = true))
-	UCameraComponent* CameraComponent;
+	UCameraComponent* FollowCamera;
 
 	//Input components for Enhanced Input system
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = true))

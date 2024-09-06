@@ -8,7 +8,7 @@ public class QuantumSkirmish : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "PoseSearch", "MotionTrajectory", "Chooser" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
