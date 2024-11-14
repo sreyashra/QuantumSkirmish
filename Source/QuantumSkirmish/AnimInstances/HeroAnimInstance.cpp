@@ -9,6 +9,9 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Animation/AnimInstance.h"
+#include "Animation/AnimMontage.h"
 #include "QuantumSkirmish/Characters/HeroBase.h"
 
 void UHeroAnimInstance::NativeInitializeAnimation()
@@ -127,6 +130,11 @@ void UHeroAnimInstance::GenerateTrajectory(float DeltaSeconds)
 	FutureVelocity = (TrajectorySample0_5.Position - TrajectorySample0_4.Position) * 10.f;
 }
 
+EOffsetRootRotationMode UHeroAnimInstance::GetOffsetRootRotationMode() const
+{
+	if (IsAnyMontagePlaying() && GetActiveSlotMontageInstanceByName(FName("DefaultSlot")) != nullptr)
+}
+
 bool UHeroAnimInstance::IsMoving() const
 {
 	constexpr float Tolerance = 0.1f;
@@ -150,3 +158,80 @@ bool UHeroAnimInstance::IsStarting() const
 
 	return bIsVelocityGreater && bIsNotPivot && bIsMoving;
 }
+
+bool UHeroAnimInstance::IsPivoting(ERotationMode RotationMode)
+{
+	FRotator FutureRotation = UKismetMathLibrary::MakeRotFromX(FutureVelocity);
+	FRotator CurrentRotation = UKismetMathLibrary::MakeRotFromX(Velocity);
+
+	float DeltaYaw = FMath::Abs(FutureRotation.Yaw - CurrentRotation.Yaw);
+	float Threshold = (RotationMode == ERotationMode::OrientToMovement) ? 60.f : 40.f;
+	return DeltaYaw >= Threshold;
+}
+
+bool UHeroAnimInstance::ShouldTurnInPlace()
+{
+	FRotator CharacterRotation = HeroCharacter->GetActorRotation();
+	FRotator RootRotation = HeroCharacter->GetMesh()->GetComponentRotation();
+
+	float DeltaYaw = FMath::Abs(CharacterRotation.Yaw - RootRotation.Yaw);
+
+	if (DeltaYaw >= 50.f)
+	{
+		if (HeroCharacter->bWantsToAim || (HeroCharacter->MovementState == EMovementState::Idle && HeroCharacter->MovementStateLastFrame == EMovementStateLastFrame::Moving))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool UHeroAnimInstance::HasJustLandedLight()
+{
+	if (HeroCharacter->bJustLanded)
+	{
+		float LandVelocityZ = HeroCharacter->GetCharacterMovement()->Velocity.Z;
+		if (FMath::Abs(LandVelocityZ) < HeavyLandSpeedThreshold)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool UHeroAnimInstance::HasJustLandedHeavy()
+{
+	if (HeroCharacter->bJustLanded)
+	{
+		float LandVelocityZ = HeroCharacter->GetCharacterMovement()->Velocity.Z;
+		if (FMath::Abs(LandVelocityZ) >= HeavyLandSpeedThreshold)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool UHeroAnimInstance::ShouldSpinTransition()
+{
+	FRotator CharacterRotation = HeroCharacter->GetActorRotation();
+	FRotator RootRotation = HeroCharacter->GetMesh()->GetComponentRotation();
+
+	float DeltaYaw = FMath::Abs(FMath::FindDeltaAngleDegrees(CharacterRotation.Yaw, RootRotation.Yaw));
+
+	if (DeltaYaw >= 130.f)
+	{
+		if (Speed2D >= 150.f)
+		{
+			if (!CurrentDatabaseTags.Contains(TEXT("Pivots")))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+

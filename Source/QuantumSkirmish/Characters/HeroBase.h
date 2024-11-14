@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "QuantumSkirmish/EnumTypes/MovementState.h"
 #include "HeroBase.generated.h"
 
 class UCameraComponent;
@@ -21,6 +22,12 @@ class QUANTUMSKIRMISH_API AHeroBase : public ACharacter
 
 public:
 	AHeroBase();
+
+	// Hero input properties
+	bool bWantsToAim;
+	bool bJustLanded;
+	EMovementState MovementState;
+	EMovementStateLastFrame MovementStateLastFrame;
 
 protected:
 	virtual void BeginPlay() override;

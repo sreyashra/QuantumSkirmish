@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "QuantumSkirmish/EnumTypes/OffsetRootRotationMode.h"
+#include "QuantumSkirmish/EnumTypes/RotationMode.h"
 #include "HeroAnimInstance.generated.h"
 
 class UCharacterMovementComponent;
@@ -26,6 +28,8 @@ protected:
 	// Event Graph nodes
 	void UpdateEssentialValues(float DeltaSeconds);
 	void GenerateTrajectory(float DeltaSeconds);
+
+	EOffsetRootRotationMode GetOffsetRootRotationMode()const;
 
 private:
 	// References
@@ -51,7 +55,7 @@ private:
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess = true))
 	UPoseSearchDatabase* CurrentSelectedDatabase;
 	TArray<FName> CurrentDatabaseTags;
-	float HeavyLandSpeedThreshold;
+	float HeavyLandSpeedThreshold = 700.f;
 	FTransform InteractionTransform;
 	bool bOffsetRootBoneEnabled;
 
@@ -65,5 +69,9 @@ private:
 public:
 	bool IsMoving() const;
 	bool IsStarting() const;
-	
+	bool IsPivoting(ERotationMode RotationMode);
+	bool ShouldTurnInPlace();
+	bool HasJustLandedLight();
+	bool HasJustLandedHeavy();
+	bool ShouldSpinTransition();
 };
