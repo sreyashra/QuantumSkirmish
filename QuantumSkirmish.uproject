@@ -1,0 +1,22 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{C1F403D0-4D24-8FFA-01EC-F1A407EF25F4}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "QuantumSkirmish",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "ModelingToolsEditorMode",
+			"Enabled": true,
+			"TargetAllowList": [
+				"Editor"
+			]
+		}
+	]
+}
