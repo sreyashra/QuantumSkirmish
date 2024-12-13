@@ -10,10 +10,7 @@
 class USkeletalMeshComponent;
 class USpringArmComponent;
 class UCameraComponent;
-class UInputComponent;
-class UInputAction;
-class UInputMappingContext;
-struct FInputActionValue;
+
 
 DECLARE_LOG_CATEGORY_EXTERN(LogHeroBase, Log, All);
 
@@ -29,14 +26,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void NotifyControllerChanged() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	// Called for movement input
-	void Move(const FInputActionValue& Value);
-
-	// Called for looking input
-	void Look(const FInputActionValue& Value);
 
 private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Mesh, meta=(AllowPrivateAccess = true))
@@ -47,21 +37,6 @@ private:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Camera, meta=(AllowPrivateAccess = true))
 	TObjectPtr<UCameraComponent> FirstPersonCamera;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta=(AllowPrivateAccess = true))
-	TObjectPtr<UInputMappingContext> InputMappingContext;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta=(AllowPrivateAccess = true))
-	TObjectPtr<UInputAction> MoveAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta=(AllowPrivateAccess = true))
-	TObjectPtr<UInputAction> LookAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta=(AllowPrivateAccess = true))
-	TObjectPtr<UInputAction> JumpAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta=(AllowPrivateAccess = true))
-	TObjectPtr<UInputAction> CrouchAction;
 
 public:
 	TObjectPtr<USkeletalMeshComponent> GetMesh1P() const { return Mesh1P; }
