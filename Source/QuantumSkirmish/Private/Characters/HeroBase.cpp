@@ -1,10 +1,6 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Characters/HeroBase.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
-
 
 DEFINE_LOG_CATEGORY(LogHeroBase);
 
@@ -12,44 +8,83 @@ AHeroBase::AHeroBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	SpringArm = CreateDefaultSubobject<USpringArmComponent>("Spring Arm");
-	SpringArm->SetupAttachment(GetRootComponent());
-	SpringArm->TargetArmLength = 0.f;
-	SpringArm->bEnableCameraLag = true;
-	SpringArm->CameraLagSpeed = 15.f;
-	SpringArm->bUsePawnControlRotation = true;
+	// Networking
+	bReplicates = true;
+	ACharacter::SetReplicateMovement(true);
+	bAlwaysRelevant = true;
+	SetNetUpdateFrequency(100.f);
+	SetMinNetUpdateFrequency(33.f);
 
-	FirstPersonCamera = CreateDefaultSubobject<UCameraComponent>("FirstPerson Camera");
-	FirstPersonCamera->SetupAttachment(SpringArm);
-	FirstPersonCamera->bUsePawnControlRotation = false;
+	//Rotation Usage
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
 
-	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>("Mesh 1P");
-	Mesh1P->SetupAttachment(FirstPersonCamera);
-	Mesh1P->SetOnlyOwnerSee(true);
-	Mesh1P->SetOwnerNoSee(false);
-	Mesh1P->bCastDynamicShadow = false;
-	Mesh1P->CastShadow = false;
-	Mesh1P->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::OnlyTickPoseWhenRendered;
-	Mesh1P->PrimaryComponentTick.TickGroup = TG_PrePhysics;
+	// Create the camera boom
+	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	CameraBoom->SetupAttachment(RootComponent);
+	CameraBoom->TargetArmLength = 300.0f;
+	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+	CameraBoom->bDoCollisionTest = true;
 
-	GetMesh()->SetOnlyOwnerSee(false);
-	GetMesh()->SetOwnerNoSee(true);
-	GetMesh()->bReceivesDecals = false;
+	// Create the follow camera
+	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+}
+
+void AHeroBase::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 }
 
 void AHeroBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void AHeroBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
-void AHeroBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+//////////////////////////////////////////////////////////////////////////
+// Input Handler Methods (Called from PlayerController)
+
+void AHeroBase::HandleMovement(const FVector2D& InputAxis)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	// Convert input to 3D movement (Forward/Right)
+	if (Controller == nullptr) return;
+
+	const FRotator Rotation = Controller->GetControlRotation();
+	const FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
+
+	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+	const FVector RightDirection   = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+	AddMovementInput(ForwardDirection, InputAxis.Y);
+	AddMovementInput(RightDirection, InputAxis.X);
+}
+
+void AHeroBase::HandleLook(const FVector2D& InputAxis)
+{
+	AddControllerYawInput(InputAxis.X);
+	AddControllerPitchInput(InputAxis.Y);
+}
+
+void AHeroBase::HandleJumpPressed()
+{
+	Jump();
+}
+
+void AHeroBase::HandleCrouchToggle()
+{
+	if (!CanCrouch())
+	{
+		UnCrouch(); // or no-op if we can't crouch
+	}
+	else
+	{
+		Crouch();
+	}
 }

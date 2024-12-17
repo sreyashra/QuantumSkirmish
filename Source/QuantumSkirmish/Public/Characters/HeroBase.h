@@ -1,20 +1,15 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InputActionValue.h"
 #include "GameFramework/Character.h"
 #include "HeroBase.generated.h"
 
-class USkeletalMeshComponent;
 class USpringArmComponent;
 class UCameraComponent;
 
-
 DECLARE_LOG_CATEGORY_EXTERN(LogHeroBase, Log, All);
 
-UCLASS()
+UCLASS(Abstract) // Abstract since this is a base class not meant to be placed directly
 class QUANTUMSKIRMISH_API AHeroBase : public ACharacter
 {
 	GENERATED_BODY()
@@ -22,25 +17,30 @@ class QUANTUMSKIRMISH_API AHeroBase : public ACharacter
 public:
 	AHeroBase();
 
-	virtual void Tick(float DeltaTime) override;
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+
+	/** Shared camera boom (pulls in towards the character if there's a collision) */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+	USpringArmComponent* CameraBoom;
+
+	/** Follow camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+	UCameraComponent* FollowCamera;
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void Tick(float DeltaTime) override;
 
-private:
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Mesh, meta=(AllowPrivateAccess = true))
-	TObjectPtr<USkeletalMeshComponent> Mesh1P;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Camera, meta=(AllowPrivateAccess = true))
-	TObjectPtr<USpringArmComponent> SpringArm;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Camera, meta=(AllowPrivateAccess = true))
-	TObjectPtr<UCameraComponent> FirstPersonCamera;
-
+	/**
+	 * These "Handle" methods can be called by the PlayerController input logic.
+	 * Child classes (Tank/DPS/Healer) can override them if they need specific behaviors.
+	 */
 public:
-	TObjectPtr<USkeletalMeshComponent> GetMesh1P() const { return Mesh1P; }
+	virtual void HandleMovement(const FVector2D& InputAxis);
+	virtual void HandleLook(const FVector2D& InputAxis);
+	virtual void HandleJumpPressed();  // Called when jump input triggers
+	virtual void HandleCrouchToggle(); // Called when crouch input triggers
 
-	TObjectPtr<UCameraComponent> GetFirstPersonCamera() const { return FirstPersonCamera; }
-	
+	/** For future expansion: Abilities, stats, etc. */
+
 };

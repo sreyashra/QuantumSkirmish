@@ -1,13 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Player/HeroPlayerController.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Characters/HeroBase.h" // For referencing AHeroBase
 
 DEFINE_LOG_CATEGORY(LogHeroPlayerController);
-
 
 AHeroPlayerController::AHeroPlayerController()
 {
@@ -41,44 +38,51 @@ void AHeroPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
-	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AHeroPlayerController::Input_Move);
-	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AHeroPlayerController::Input_Look);
-	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AHeroPlayerController::Input_Jump);
-	EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Triggered, this, &AHeroPlayerController::Input_Crouch);
+	UEnhancedInputComponent* EnhancedInput = CastChecked<UEnhancedInputComponent>(InputComponent);
+
+	EnhancedInput->BindAction(MoveAction,  ETriggerEvent::Triggered, this, &AHeroPlayerController::Input_Move);
+	EnhancedInput->BindAction(LookAction,  ETriggerEvent::Triggered, this, &AHeroPlayerController::Input_Look);
+	EnhancedInput->BindAction(JumpAction,  ETriggerEvent::Started,   this, &AHeroPlayerController::Input_Jump);
+	EnhancedInput->BindAction(CrouchAction,ETriggerEvent::Triggered, this, &AHeroPlayerController::Input_Crouch);
 }
+
+//////////////////////////////////////////////////////////////////////////
+// Enhanced Input Event Handlers
 
 void AHeroPlayerController::Input_Move(const FInputActionValue& Value)
 {
 	if (!bPawnAlive) return;
-
-	const FVector2D InputAxisVector = Value.Get<FVector2D>();
-	const FRotator Rotation = GetControlRotation();
-	const FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
-
-	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-
-	if (APawn* ControlledPawn = GetPawn<APawn>())
+	if (AHeroBase* Hero = Cast<AHeroBase>(GetPawn()))
 	{
-		ControlledPawn->AddMovementInput(ForwardDirection, InputAxisVector.Y);
-		ControlledPawn->AddMovementInput(RightDirection, InputAxisVector.X);
+		const FVector2D InputAxisVector = Value.Get<FVector2D>();
+		Hero->HandleMovement(InputAxisVector);
 	}
 }
 
 void AHeroPlayerController::Input_Look(const FInputActionValue& Value)
 {
-	const FVector2D InputAxisVector = Value.Get<FVector2D>();
-	AddYawInput(InputAxisVector.X);
-	AddPitchInput(InputAxisVector.Y);
+	if (!bPawnAlive) return;
+	if (AHeroBase* Hero = Cast<AHeroBase>(GetPawn()))
+	{
+		const FVector2D InputAxisVector = Value.Get<FVector2D>();
+		Hero->HandleLook(InputAxisVector);
+	}
 }
 
 void AHeroPlayerController::Input_Jump()
 {
-	
+	if (!bPawnAlive) return;
+	if (AHeroBase* Hero = Cast<AHeroBase>(GetPawn()))
+	{
+		Hero->HandleJumpPressed();
+	}
 }
 
 void AHeroPlayerController::Input_Crouch()
 {
-	
+	if (!bPawnAlive) return;
+	if (AHeroBase* Hero = Cast<AHeroBase>(GetPawn()))
+	{
+		Hero->HandleCrouchToggle();
+	}
 }

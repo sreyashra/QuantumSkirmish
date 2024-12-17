@@ -1,12 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "HeroPlayerController.generated.h"
 
-class UInputComponent;
 class UInputAction;
 class UInputMappingContext;
 struct FInputActionValue;
@@ -19,22 +16,22 @@ UCLASS()
 class QUANTUMSKIRMISH_API AHeroPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
 public:
 	AHeroPlayerController();
-	bool bPawnAlive;
+
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnRep_PlayerState() override;
-
+	
 	UPROPERTY(BlueprintAssignable)
 	FOnPlayerStateReplicated OnPlayerStateReplicated;
 
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
-	
 
 private:
+	// Input mapping / actions
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputMappingContext> InputMappingContext;
 
@@ -50,9 +47,15 @@ private:
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> CrouchAction;
 
+	// You can add more input actions for "Aim", "Fire", "Ability1", etc.
+
+	// Local state
+	bool bPawnAlive;
+
+private:
+	// Enhanced Input callbacks
 	void Input_Move(const FInputActionValue& Value);
 	void Input_Look(const FInputActionValue& Value);
 	void Input_Jump();
 	void Input_Crouch();
-	
 };
