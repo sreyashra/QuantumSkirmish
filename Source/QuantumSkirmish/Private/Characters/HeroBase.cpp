@@ -1,6 +1,7 @@
 #include "Characters/HeroBase.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "HeroComponents/HeroAbilitySystemComponent.h"
 
 DEFINE_LOG_CATEGORY(LogHeroBase);
@@ -16,10 +17,10 @@ AHeroBase::AHeroBase()
 	SetNetUpdateFrequency(100.f);
 	SetMinNetUpdateFrequency(33.f);
 
-	//Rotation Usage
-	bUseControllerRotationPitch = false;
-	bUseControllerRotationYaw = false;
-	bUseControllerRotationRoll = false;
+	// Rotation Usage and Character Movement Component properties
+	GetCharacterMovement()->bOrientRotationToMovement = false;
+	bUseControllerRotationYaw = true;
+	
 
 	// Create the camera boom
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -32,7 +33,7 @@ AHeroBase::AHeroBase()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
-
+	
 	// Create Ability System Component
 	AbilitySystemComponent = CreateDefaultSubobject<UHeroAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetIsReplicated(true);

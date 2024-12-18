@@ -31,5 +31,24 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, Category=Movement, meta=(AllowPrivateAccess=true))
 	bool bIsCrouched;
-	
+
+	UPROPERTY(BlueprintReadOnly, Category=Movement, meta=(AllowPrivateAccess=true))
+	bool bIsAccelerating;
+
+	UPROPERTY(BlueprintReadOnly, Category = Rotation, meta=(AllowPrivateAccess=true))
+	float Pitch;
+
+	UPROPERTY(BlueprintReadOnly, Category = Rotation, meta=(AllowPrivateAccess=true))
+	float Yaw;
+
+	UPROPERTY(BlueprintReadOnly, Category = Rotation, meta=(AllowPrivateAccess=true))
+	float Roll;
+
+	UPROPERTY(BlueprintReadOnly, Category = Rotation, meta=(AllowPrivateAccess=true))
+	float YawDelta;
+
+	FRotator RotationLastTick = FRotator::ZeroRotator;
+
+	UPROPERTY(BlueprintReadOnly, Category = Animation, meta=(AllowPrivateAccess=true))
+	bool bIsFullBody;
 };
