@@ -6,6 +6,7 @@
 
 class USpringArmComponent;
 class UCameraComponent;
+class UHeroAbilitySystemComponent;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogHeroBase, Log, All);
 
@@ -19,13 +20,12 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
-	/** Shared camera boom (pulls in towards the character if there's a collision) */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
-	USpringArmComponent* CameraBoom;
+	virtual void HandleMovement(const FVector2D& InputAxis);
+	virtual void HandleLook(const FVector2D& InputAxis);
+	virtual void HandleJumpPressed();  // Called when jump input triggers
+	virtual void HandleCrouchToggle(); // Called when crouch input triggers
 
-	/** Follow camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
-	UCameraComponent* FollowCamera;
+	/** For future expansion: Abilities, stats, etc. */
 
 protected:
 	virtual void BeginPlay() override;
@@ -35,12 +35,23 @@ protected:
 	 * These "Handle" methods can be called by the PlayerController input logic.
 	 * Child classes (Tank/DPS/Healer) can override them if they need specific behaviors.
 	 */
-public:
-	virtual void HandleMovement(const FVector2D& InputAxis);
-	virtual void HandleLook(const FVector2D& InputAxis);
-	virtual void HandleJumpPressed();  // Called when jump input triggers
-	virtual void HandleCrouchToggle(); // Called when crouch input triggers
+	/** Shared camera boom (pulls in towards the character if there's a collision) */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+	USpringArmComponent* CameraBoom;
 
-	/** For future expansion: Abilities, stats, etc. */
+	/** Follow camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+	UCameraComponent* FollowCamera;
+
+	/** Ability System Component */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Abilities)
+	UHeroAbilitySystemComponent* AbilitySystemComponent;
+
+private:
+	
+	 
+public:
+	UFUNCTION(BlueprintCallable, Category = Abilities)
+	UHeroAbilitySystemComponent* GetAbilitySystemComponent() const { return AbilitySystemComponent; }
 
 };

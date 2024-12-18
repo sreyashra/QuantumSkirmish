@@ -1,6 +1,7 @@
 #include "Characters/HeroBase.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "HeroComponents/HeroAbilitySystemComponent.h"
 
 DEFINE_LOG_CATEGORY(LogHeroBase);
 
@@ -31,6 +32,10 @@ AHeroBase::AHeroBase()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
+	// Create Ability System Component
+	AbilitySystemComponent = CreateDefaultSubobject<UHeroAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent->SetIsReplicated(true);
 }
 
 void AHeroBase::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -41,6 +46,12 @@ void AHeroBase::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutL
 void AHeroBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (AbilitySystemComponent)
+	{
+		UE_LOG(LogTemp, Log, TEXT("AHeroBase: AbilitySystemComponent is valid!"));
+	}
+
 }
 
 void AHeroBase::Tick(float DeltaTime)
