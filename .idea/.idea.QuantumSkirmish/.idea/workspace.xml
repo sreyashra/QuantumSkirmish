@@ -1,29 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+
+  <!-- Stores active and additional changelists for version control commits -->
   <component name="ChangeListManager">
+    <!-- Default changelist -->
     <list default="true" id="1f11b7a5-803e-438f-a78a-4c992b2bd106" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+
+    <!-- Existing secondary changelist for experimentation -->
+    <list default="false" id="3d55f9b3-22af-4b12-8c7e-121212345678" name="Experimental Features" comment="Work in progress" />
+    
+    <!-- NEW: Additional changelist for hotfixes or urgent issues -->
+    <list default="false" id="5a33c9c3-aa55-4c00-9b7e-123456789abc" name="Hotfix" comment="Urgent fixes only" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 4
-}]]></component>
+
+  <!-- Color info for the project (e.g., Project Color, for JetBrains “colored projects” feature) -->
+  <component name="ProjectColorInfo">
+    <![CDATA[{
+      "customColor": "",
+      "associatedIndex": 4
+    }]]>
+  </component>
+
+  <!-- Project ID used internally by the IDE -->
   <component name="ProjectId" id="2r6cphrU18khVLuyjKbp0xmslAU" />
+
+  <!-- Project View configuration (e.g., whether packages/libraries are shown) -->
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
+    <!-- Optionally show “auto-scroll from source” in Project View -->
+    <option name="autoScrollFromSource" value="false" />
+    
+    <!-- NEW: Expand newly added files by default in the project tree. -->
+    <option name="autoExpandNewFiles" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
-  }
-}]]></component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+
+  <!-- Stores user-defined properties, plugin info, or run-once settings -->
+  <component name="PropertiesComponent">
+    <![CDATA[{
+      "keyToString": {
+        "RunOnceActivity.ShowReadmeOnStart": "true",
+        "nodejs_package_manager_path": "npm",
+        "vue.rearranger.settings.migration": "true",
+        
+        "my.custom.property": "enhancedValue",
+        /* NEW: Example additional property for DevOps integration or custom logic */
+        "my.devops.integration": "enabled"
+      }
+    }]]>
+  </component>
+
+  <!-- Spell checker settings (0 indicates no custom dictionaries/folders) -->
+  <component name="SpellCheckerSettings"
+             RuntimeDictionaries="0"
+             Folders="0"
+             CustomDictionaries="0"
+             DefaultDictionary="application-level"
+             UseSingleDictionary="true"
+             transferred="true" />
+
+  <!-- Task manager is used for tracking tasks/issues within the IDE -->
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="1f11b7a5-803e-438f-a78a-4c992b2bd106" name="Changes" comment="" />
@@ -34,12 +74,44 @@
       <workItem from="1735883152340" duration="6000" />
     </task>
     <servers />
+
+    <!-- Example secondary task for a specific feature or bug fix -->
+    <task active="false" id="Feature-XYZ" summary="Implement Feature XYZ">
+      <changelist id="3d55f9b3-22af-4b12-8c7e-121212345678" name="Experimental Features" comment="" />
+      <created>1736000000000</created>
+      <option name="number" value="Feature-XYZ" />
+      <option name="presentableId" value="Feature-XYZ" />
+      <updated>1736000500000</updated>
+      <workItem from="1736000501000" duration="12000" />
+    </task>
+
+    <!-- NEW: Another task that uses the Hotfix changelist -->
+    <task active="false" id="Hotfix-123" summary="Fix critical bug #123">
+      <changelist id="5a33c9c3-aa55-4c00-9b7e-123456789abc" name="Hotfix" comment="Urgent fixes only" />
+      <created>1736001000000</created>
+      <option name="number" value="Hotfix-123" />
+      <option name="presentableId" value="Hotfix-123" />
+      <updated>1736001500000</updated>
+      <workItem from="1736001501000" duration="3000" />
+    </task>
   </component>
+
+  <!-- TypeScript manager info; version indicates settings for code generation -->
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+
+  <!-- Custom Unity settings; e.g., hasMinimizedUI to toggle simplified UI -->
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+
+  <!-- VCS-related configurations -->
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <!-- Possibly define or enable a pre-commit check -->
+    <option name="ENABLE_PRECOMMIT_HOOKS" value="true" />
+    
+    <!-- NEW: Example property for Git Flow support -->
+    <option name="ENABLE_GIT_FLOW" value="true" />
   </component>
+
 </project>
