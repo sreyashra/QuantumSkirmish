@@ -6,12 +6,21 @@
 #include "GameFramework/PlayerController.h"
 #include "QSPlayerController.generated.h"
 
-/**
- * 
- */
+class AQSPlayerCharacter;
+
 UCLASS()
 class AQSPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+public:
+	// Only called on the server.
+	void OnPossess(APawn* NewPawn) override;
+
+	// Only called on the client, also on the listen server.
+	void AcknowledgePossession(APawn* NewPawn) override;
+
+private:
+	UPROPERTY()
+	AQSPlayerCharacter* QSPlayerCharacter;
 	
 };
